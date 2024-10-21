@@ -7,12 +7,12 @@
 
 -- LICENCIATURA EN INFORMATICA 
 
--- TRABAJO PRACTICO 2  
+-- TRABAJO PRACTICO 2-3  
 -- SEMINARIO DE PRACTICA INFORMATICA  
 
 -- Autor: Mario Javier Altamirano 
 
--- Fecha: 06/10/2024 
+-- Fecha: 21/10/2024 
 -- -------------------------------------------------------------------------------------------
 						-- DESARROLLO DEL TRABAJO PRÁCTICO -- 
 -- -------------------------------------------------------------------------------------------
@@ -71,6 +71,7 @@ CREATE TABLE IF NOT EXISTS productosPOS (
     descripcion VARCHAR(255) NOT NULL,
     codigo_barras VARCHAR(13) UNIQUE,
     precio_venta DECIMAL(10,2) NOT NULL,
+    existencia decimal(10,2),
 	FOREIGN KEY (id_producto) REFERENCES productosSGP(id_producto)
 );
 
@@ -111,6 +112,7 @@ CREATE TABLE IF NOT EXISTS permisos (
 CREATE TABLE IF NOT EXISTS usuarios (
     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
     nombre VARCHAR(255) NOT NULL,
+    clave CHAR NOT NULL,
     id_rol INT,
     FOREIGN KEY (id_rol) REFERENCES roles(id_rol)
 );
@@ -153,12 +155,12 @@ CREATE TABLE IF NOT EXISTS impresiones (
 INSERT INTO secciones (descripcion) 
 VALUES ('Electrónica'), ('Ropa'), ('Alimentos');
 
--- UPDATE en la tabla Secciones
+/*-- UPDATE en la tabla Secciones
 UPDATE secciones 
 SET descripcion = 'Electrodomésticos' 
 WHERE id_seccion = 1;
 
-/*-- DELETE en la tabla Secciones
+-- DELETE en la tabla Secciones
 DELETE FROM secciones 
 WHERE id_seccion = 3;*/
 
@@ -166,12 +168,12 @@ WHERE id_seccion = 3;*/
 INSERT INTO departamentos (nombre, id_seccion) 
 VALUES ('Televisores', 1), ('Computadoras', 1), ('Camisas', 2);
 
--- UPDATE en la tabla Departamentos
+/*-- UPDATE en la tabla Departamentos
 UPDATE departamentos 
 SET nombre = 'Smart TVs' 
 WHERE id_departamento = 1;
 
-/*-- DELETE en la tabla Departamentos
+-- DELETE en la tabla Departamentos
 DELETE FROM departamentos 
 WHERE id_departamento = 3;*/
 
@@ -179,12 +181,12 @@ WHERE id_departamento = 3;*/
 INSERT INTO grupos (descripcion, id_seccion, id_departamento) 
 VALUES ('Televisores LED', 1, 1), ('Portátiles', 1, 2);
 
--- UPDATE en la tabla Grupos
+/*-- UPDATE en la tabla Grupos
 UPDATE grupos 
 SET descripcion = 'Televisores OLED' 
 WHERE id_grupo = 1;
 
-/*-- DELETE en la tabla Grupos
+-- DELETE en la tabla Grupos
 DELETE FROM grupos 
 WHERE id_grupo = 3;*/
 
@@ -194,12 +196,12 @@ VALUES (1001, 'Televisor 40 pulgadas', '1234567890123', 25000.50, 10, 1, 1, 1, 5
        (1002, 'Laptop Gamer', '9876543210987', 85000.75, 5, 1, 1, 1, 7.50),
        (1003, 'Mouse', '9876543210988',9000, 5, 1, 1, 1, 10);
 
--- UPDATE en la tabla productosSGP
+/*-- UPDATE en la tabla productosSGP
 UPDATE productosSGP 
 SET precio_venta = 24000.00 
 WHERE id_producto = 1002;
 
-/*-- DELETE en la tabla productosSGP
+-- DELETE en la tabla productosSGP
 DELETE FROM productosSGP 
 WHERE id_producto = 1003;*/
 
@@ -209,12 +211,12 @@ VALUES (1001, 'Televisor 40 pulgadas', '1234567890123', 25000.50),
        (1002, 'Laptop Gamer', '9876543210987', 85000.75),
        (1003, 'Mouse', '9876543210988', 9000);
 
--- UPDATE en la tabla productosPOS
+/*-- UPDATE en la tabla productosPOS
 UPDATE productosPOS 
 SET precio_venta = 24000.00 
 WHERE id_producto = 1001;
 
-/*-- DELETE en la tabla productosPOS
+-- DELETE en la tabla productosPOS
 DELETE FROM productosPOS 
 WHERE id_producto = 1003;*/
 
@@ -222,12 +224,12 @@ WHERE id_producto = 1003;*/
 INSERT INTO novedades_tipo (descripcion) 
 VALUES ('Cambio de precio'),('Cambio de Descri.'), ('ALTAS');
 
--- UPDATE en la tabla novedades_tipo
+/*-- UPDATE en la tabla novedades_tipo
 UPDATE novedades_tipo 
 SET descripcion = 'Cambio de Descripción' 
 WHERE id_tipo_novedad = 2;
 
-/*-- DELETE en la tabla novedades_tipo
+-- DELETE en la tabla novedades_tipo
 DELETE FROM novedades_tipo 
 WHERE id_tipo_novedad = 3;*/
 
@@ -235,12 +237,12 @@ WHERE id_tipo_novedad = 3;*/
 INSERT INTO novedadessgp (id_producto, fecha_novedad, descripcion_novedad, codigo_barras, precio_novedad, id_tipo_novedad, operador_novedad, vigencia_desde, vigencia_hasta) 
 VALUES (1001, '2024-10-01 10:00:00', 'Actualización de precio', '1234567890123', 24500.00, 1, 'Operador1', '2024-10-01', '2024-12-31');
 
--- UPDATE en la tabla novedadessgp
+/*-- UPDATE en la tabla novedadessgp
 UPDATE novedadessgp 
 SET precio_novedad = 23000.00 
 WHERE id_novedad = 1;
 
-/*-- DELETE en la tabla novedadessgp
+-- DELETE en la tabla novedadessgp
 DELETE FROM novedadessgp 
 WHERE id_novedad = 3;*/
 
@@ -248,12 +250,12 @@ WHERE id_novedad = 3;*/
 INSERT INTO roles (descripcion) 
 VALUES ('Administrador'), ('Repositor');
 
--- UPDATE en la tabla roles
+/*-- UPDATE en la tabla roles
 UPDATE roles 
 SET descripcion = 'Super Administrador' 
 WHERE id_rol = 1;
 
-/*-- DELETE en la tabla roles
+-- DELETE en la tabla roles
 DELETE FROM roles 
 WHERE id_rol = 3;*/
 
@@ -261,25 +263,25 @@ WHERE id_rol = 3;*/
 INSERT INTO permisos (descripcion) 
 VALUES ('Imprimir novedades'), ('Imprimir Reportes');
 
--- UPDATE en la tabla permisos
+/*-- UPDATE en la tabla permisos
 UPDATE permisos 
 SET descripcion = 'Filtros Avanzados' 
 WHERE id_permiso = 1;
 
-/*-- DELETE en la tabla permisos
+-- DELETE en la tabla permisos
 DELETE FROM permisos 
 WHERE id_permiso = 3;*/
 
 -- INSERT en la tabla usuarios
-INSERT INTO usuarios (nombre, id_rol) 
-VALUES ('Juan Perez', 1), ('Ana Gomez', 2);
+INSERT INTO usuarios (nombre,clave, id_rol) 
+VALUES ('Juan Perez',1, 1), ('Ana Gomez',2,2);
 
--- UPDATE en la tabla usuarios
+/*-- UPDATE en la tabla usuarios
 UPDATE usuarios 
 SET nombre = 'Juan Carlos Perez' 
 WHERE id_usuario = 1;
 
-/*-- DELETE en la tabla usuarios
+-- DELETE en la tabla usuarios
 DELETE FROM usuarios 
 WHERE id_usuario = 3;*/
 
@@ -287,12 +289,11 @@ WHERE id_usuario = 3;*/
 INSERT INTO roles_permisos (id_rol, id_permiso, fecha) 
 VALUES (1, 1, '2024-10-01 09:00:00'), (2, 2, '2024-10-01 09:30:00');
 
--- UPDATE en la tabla roles_permisos
+/*-- UPDATE en la tabla roles_permisos
 UPDATE roles_permisos 
 SET fecha = '2024-10-01 10:00:00' 
 WHERE id_rol = 1 AND id_permiso = 1;
-
-/*-- DELETE en la tabla roles_permisos
+-- DELETE en la tabla roles_permisos
 DELETE FROM roles_permisos 
 WHERE id_rol = 2 AND id_permiso = 3;*/
 
@@ -304,17 +305,17 @@ VALUES ('INSERT', 'Creación de nueva novedad', '2024-10-01 10:30:00', 'Operador
 INSERT INTO impresiones (id_novedad, id_usuario, tipo_etiqueta, fecha_impresion, estado_impresion, cantidad_etiquetas) 
 VALUES (1, 1, 'Etiqueta estándar', '2024-10-01 11:00:00', 'PENDIENTE', 100);
 
--- UPDATE en la tabla impresiones
+/*-- UPDATE en la tabla impresiones
 UPDATE impresiones 
 SET estado_impresion = 'IMPRESA', cantidad_etiquetas = 100 
 WHERE id_impresion = 1;
 
-/*-- DELETE en la tabla impresiones
+-- DELETE en la tabla impresiones
 DELETE FROM impresiones 
 WHERE id_impresion = 3;*/
 
 -- -----------------------------------CONSULTAS ----------------------------------------------------
-
+/*
 -- Consulta en la tabla Secciones
 SELECT * FROM secciones 
 WHERE id_seccion = 1;
@@ -367,5 +368,5 @@ WHERE id = 1;
 
 -- Consulta en la tabla impresiones
 SELECT * FROM impresiones 
-WHERE id_impresion = 1;
+WHERE id_impresion = 1;*/
 
