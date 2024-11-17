@@ -4,28 +4,15 @@ package main.java.sigep.views;
 //import main.java.sigep.controllers.Printer;
 import main.java.sigep.model.dao.ProductosPOSDAO;
 import main.java.sigep.model.entities.ProductosPOS;
-import main.java.sigep.model.entities.Etiquetas;
 import java.awt.Component;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URL;
-import java.nio.channels.Channels;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Files;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.swing.ImageIcon;
@@ -35,8 +22,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JRadioButton;
 import javax.swing.JSpinner.DefaultEditor;
 import javax.swing.SwingUtilities;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
+import main.java.sigep.controllers.Printer;
+import main.java.sigep.model.entities.Etiquetas;
+
 
 /**
  *
@@ -49,6 +37,8 @@ public class Precios extends javax.swing.JFrame {
     private DecimalFormat formatter = new DecimalFormat("#,##0.00");
     private Ayuda ayuda;
     private static String[] savedArgs;
+    
+    
 
     public Precios() {
       
@@ -70,10 +60,7 @@ public class Precios extends javax.swing.JFrame {
                     //break;
                 }
             }
-            if (cbImpresora.getItemCount() == 1) {
-                lbImpresora.setVisible(false);
-                cbImpresora.setVisible(false);
-            }
+            
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             JOptionPane.showMessageDialog(null, "No se pudo encontrar el servicio de impresión",
@@ -85,6 +72,8 @@ public class Precios extends javax.swing.JFrame {
         buttons.add(rbDeposito);
         buttons.add(rbFraccionadaGondolas);
         buttons.add(rbCodigoBarrasPrecio);
+        
+      
         
         pLabels.addKeyListener(new KeyListener() {
 
@@ -181,6 +170,7 @@ public class Precios extends javax.swing.JFrame {
         lbSeleccionarEtiqueta = new javax.swing.JLabel();
         cbImpresora = new javax.swing.JComboBox();
         lbImpresora = new javax.swing.JLabel();
+        lbCodigo1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Etiquetas"); // NOI18N
@@ -188,7 +178,7 @@ public class Precios extends javax.swing.JFrame {
 
         tfCodigo.setFont(new java.awt.Font("Arial", 1, 18)); // NOI18N
         tfCodigo.setHorizontalAlignment(javax.swing.JTextField.CENTER);
-        tfCodigo.setToolTipText("Presione <Enter> para confirmar");
+        tfCodigo.setToolTipText("Presione <Enter> para confirmar - <F1> Ayuda");
         tfCodigo.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusLost(java.awt.event.FocusEvent evt) {
                 tfCodigoFocusLost(evt);
@@ -222,6 +212,7 @@ public class Precios extends javax.swing.JFrame {
 
         lbExistencia.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
         lbExistencia.setText("Existencia");
+        lbExistencia.setEnabled(false);
 
         lbPrecio.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
         lbPrecio.setText("Precio $");
@@ -236,6 +227,7 @@ public class Precios extends javax.swing.JFrame {
         lbCantidad.setText("Cantidad");
 
         tfExistencia.setEditable(false);
+        tfExistencia.setEnabled(false);
         tfExistencia.setFocusable(false);
 
         tfPrecio.setEditable(false);
@@ -289,6 +281,7 @@ public class Precios extends javax.swing.JFrame {
 
         bgLabels.add(rbDeposito);
         rbDeposito.setText("Depósito");
+        rbDeposito.setEnabled(false);
         rbDeposito.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rbDepositoActionPerformed(evt);
@@ -314,6 +307,7 @@ public class Precios extends javax.swing.JFrame {
 
         bgLabels.add(rbCodigoBarrasPrecio);
         rbCodigoBarrasPrecio.setText("Cod. Barras y Precio");
+        rbCodigoBarrasPrecio.setEnabled(false);
         rbCodigoBarrasPrecio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 rbCodigoBarrasPrecioActionPerformed(evt);
@@ -360,6 +354,10 @@ public class Precios extends javax.swing.JFrame {
         lbImpresora.setFont(new java.awt.Font("Arial", 1, 13)); // NOI18N
         lbImpresora.setText("Impresora");
 
+        lbCodigo1.setFont(new java.awt.Font("Arial", 0, 13)); // NOI18N
+        lbCodigo1.setForeground(new java.awt.Color(153, 153, 153));
+        lbCodigo1.setText("[ F1 - Ayuda ]");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -368,40 +366,49 @@ public class Precios extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(lbImpresora)
                             .addComponent(lbDescripcion)
-                            .addComponent(lbCodigoBarras)
-                            .addComponent(lbExistencia)
-                            .addComponent(lbPrecio)
-                            .addComponent(lbFraccion)
-                            .addComponent(lbImporte)
-                            .addComponent(lbCantidad))
+                            .addComponent(lbCodigoBarras))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(tfDescripcion))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(pLabels, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(tfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(163, 163, 163)
+                                .addComponent(lbCodigo)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(lbCodigo1))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(tfCodigoBarras, javax.swing.GroupLayout.PREFERRED_SIZE, 226, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(lbImpresora)
+                                    .addComponent(lbPrecio)
+                                    .addComponent(lbFraccion)
+                                    .addComponent(lbImporte)
+                                    .addComponent(lbCantidad))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(spFraccion, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(tfExistencia, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(tfImporte, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(cbImpresora, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                     .addComponent(spCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGroup(layout.createSequentialGroup()
                                         .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(cbPrecio, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addComponent(tfCodigoBarras))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(btImprimir))
-                            .addComponent(tfDescripcion)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(pLabels, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
+                                        .addComponent(cbPrecio, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                .addGap(31, 31, 31)
+                                .addComponent(lbExistencia)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, 441, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addGap(163, 163, 163)
-                                .addComponent(lbCodigo)))))
+                                .addComponent(tfExistencia, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btImprimir)))
                 .addGap(29, 29, 29))
         );
         layout.setVerticalGroup(
@@ -410,7 +417,9 @@ public class Precios extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(lbCodigo)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(lbCodigo)
+                            .addComponent(lbCodigo1))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(tfCodigo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(pLabels, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -422,25 +431,25 @@ public class Precios extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfCodigoBarras, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbCodigoBarras))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfExistencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbExistencia))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbPrecio)
-                    .addComponent(cbPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(spFraccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbFraccion))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(tfImporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbImporte))
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(btImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(99, 99, 99))
+                    .addGroup(layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbPrecio)
+                            .addComponent(cbPrecio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(spFraccion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbFraccion))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfImporte, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbImporte))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(spCantidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -449,61 +458,46 @@ public class Precios extends javax.swing.JFrame {
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(cbImpresora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbImpresora))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btImprimir, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(99, 99, 99))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(tfExistencia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(lbExistencia))
+                        .addContainerGap(111, Short.MAX_VALUE))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void btImprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btImprimirActionPerformed
-//        if (articuloSeleccionado != null) {
-//            Etiquetas etiqueta = new Etiquetas(articuloSeleccionado);
-//            //if (retail) {
-//            if (cbPrecio.getSelectedIndex() == 0) {
-//                etiqueta.setPrecio(articuloSeleccionado.getPrecioMinorista());
-//            } else {
-//                etiqueta.setPrecio(articuloSeleccionado.getPrecioMayorista());
-//            }
-//            etiqueta.setFraccion((Double) spFraccion.getValue());
-//            etiqueta.setTotal(Double.parseDouble(tfPrecio.getText().replace(",", ".")));
-//            printService    = (PrintService)cbImpresora.getSelectedItem();
-//            if (printService != null) {
-//                Printer printer = new Printer(printService);
-//                int cantidad = (Integer) spCantidad.getValue();
-//                if (rbBlisters.isSelected()) {
-//                    printer.print(etiqueta, cantidad, Printer.LabelType.BLISTERS);
-//                } else if (rbDeposito.isSelected()) {
-//                    printer.print(etiqueta, cantidad, Printer.LabelType.DEPOSIT);
-//                } else if (rbDobleDescripcion.isSelected()) {
-//                    printer.print(etiqueta, cantidad, Printer.LabelType.DOUBLE_DESCRIPTION);
-//                } else if (rbPisos.isSelected()) {
-//                    printer.print(etiqueta, cantidad, Printer.LabelType.FLOORS);
-//                } else if (rbFraccionada.isSelected()) {
-//                    printer.print(etiqueta, cantidad, Printer.LabelType.FRACTIONAL);
-//                } else if (rbFraccionadaGondolas.isSelected()) {
-//                    printer.print(etiqueta, cantidad, Printer.LabelType.FRACTIONAL_STANDS);
-//                } else if (rbMini.isSelected()) {
-//                    printer.print(etiqueta, cantidad, Printer.LabelType.MINI);
-//                } else if (rbGondolas.isSelected()) {
-//                    printer.print(etiqueta, cantidad, Printer.LabelType.STANDS);
-//                } else if (rbCodigoBarrasPrecio.isSelected()) {
-//                    printer.print(etiqueta, cantidad, Printer.LabelType.BARCODE_PRICE);
-//                }
-//                spCantidad.setValue(1);
-//                tfCodigo.selectAll();
-//                tfCodigo.requestFocus();
-//            } else {
-//                JOptionPane.showMessageDialog(null, "No se pudo encontrar la impresora",
-//                        "Alerta!", JOptionPane.ERROR_MESSAGE);
-//            }
-//        } else {
-//            JOptionPane.showMessageDialog(null, "Nada para imprimir",
-//                    "Alerta!", JOptionPane.ERROR_MESSAGE);
-//        }
+        if (articuloSeleccionado != null) {
+            Etiquetas etiqueta = new Etiquetas(articuloSeleccionado);
+           
+            
+            if (cbPrecio.getSelectedIndex() == 0) {
+                etiqueta.setPrecio(articuloSeleccionado.getPrecioMinorista());
+            }
+             printService    = (PrintService)cbImpresora.getSelectedItem();
+            
+            
+            if (printService != null) {
+                Printer printer = new Printer(printService);
+                int cantidad = (Integer) spCantidad.getValue();
+                
+                if (rbGondolas.isSelected()) {
+                    printer.print(etiqueta, cantidad, Printer.LabelType.STANDS);
+                
+                }
+                spCantidad.setValue(1);
+                tfCodigo.selectAll();
+                tfCodigo.requestFocus();
+            } else {
+                JOptionPane.showMessageDialog(null, "No se pudo encontrar la impresora",
+                        "Alerta!", JOptionPane.ERROR_MESSAGE);
+            }
+        } else {
+            JOptionPane.showMessageDialog(null, "Nada para imprimir",
+                    "Alerta!", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btImprimirActionPerformed
 
     private void rbGondolasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbGondolasActionPerformed
@@ -516,7 +510,7 @@ public class Precios extends javax.swing.JFrame {
     }//GEN-LAST:event_rbFraccionadaGondolasActionPerformed
 
     private void rbDepositoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rbDepositoActionPerformed
-        bgLabelsRules(false);
+        
     }//GEN-LAST:event_rbDepositoActionPerformed
 
     private void tfCodigoKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_tfCodigoKeyReleased
@@ -688,6 +682,7 @@ private void tfPrecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRS
     private javax.swing.JComboBox cbPrecio;
     private javax.swing.JLabel lbCantidad;
     private javax.swing.JLabel lbCodigo;
+    private javax.swing.JLabel lbCodigo1;
     private javax.swing.JLabel lbCodigoBarras;
     private javax.swing.JLabel lbDescripcion;
     private javax.swing.JLabel lbExistencia;

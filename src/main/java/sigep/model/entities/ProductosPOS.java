@@ -1,5 +1,6 @@
 
 package main.java.sigep.model.entities;
+import java.text.NumberFormat;
 
 /**
  *
@@ -71,6 +72,16 @@ public class ProductosPOS {
 
     public void setExistencia(double existencia) {
        this.existencia = existencia; 
+    }
+
+    
+     public Object[] toObject() {
+        return new Object[] { codigoInterno, codigoBarra, descripcion, existencia, precioMinorista };
+    }
+     
+    public static String format(Double value) {
+        NumberFormat formatter = NumberFormat.getCurrencyInstance();
+        return formatter.format(value);
     }
     
 }

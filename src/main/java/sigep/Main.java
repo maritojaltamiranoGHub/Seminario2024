@@ -1,7 +1,4 @@
-/*
- * 
- * 
- */
+
 package main.java.sigep;
 
 import main.java.sigep.views.Principal;

@@ -33,7 +33,7 @@ public class Principal extends javax.swing.JFrame {
         try {
             Properties properties = new Properties();
             properties.load(getClass().getResourceAsStream("/resources/Main.properties"));
-            setTitle("SIGEP 1.0." + properties.getProperty("Application.revision")
+            setTitle("Siglo XXI - SIGEP 1.0." + properties.getProperty("Application.revision")
                     + "." + properties.getProperty("Application.buildnumber"));
         } catch (IOException ex) {
             System.out.println(ex.getMessage());
@@ -60,7 +60,7 @@ public class Principal extends javax.swing.JFrame {
         }
         else{
         
-            jmArchivo.setVisible(true);
+            jmArchivo.setVisible(false);
         }
         //Permisos comunes a todos los perfiles
         jmImpresiones.setVisible(true);
@@ -145,7 +145,7 @@ public class Principal extends javax.swing.JFrame {
 
         lblIniciarSesion.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         lblIniciarSesion.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lblIniciarSesion.setText("Inicion de Sesión");
+        lblIniciarSesion.setText("Inicio de Sesión");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -226,6 +226,11 @@ public class Principal extends javax.swing.JFrame {
         jmImpresiones.add(jmiPrecios);
 
         jmiNovedades.setText("Novedades");
+        jmiNovedades.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jmiNovedadesActionPerformed(evt);
+            }
+        });
         jmImpresiones.add(jmiNovedades);
 
         jMenuBar1.add(jmImpresiones);
@@ -315,7 +320,7 @@ public class Principal extends javax.swing.JFrame {
             //Roles
             
             RolesDAO rolesDAO = new RolesDAO();
-            Roles roles = rolesDAO.ObtenerRolUsuario(1);
+            Roles roles = rolesDAO.ObtenerRolUsuario(usuario.getIdRol());
             
             lbUsuariovalidado.setText("Usuario: "+usuario.getNombre());
             lbRolDeUsuario.setText("Rol: "+roles.getNombreRol());
@@ -336,7 +341,7 @@ public class Principal extends javax.swing.JFrame {
     }//GEN-LAST:event_txtUsuarioActionPerformed
 
     private void jmiUsuariosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiUsuariosActionPerformed
-        // TODO add your handling code here:
+        abrirVentanaUsuariosABM();
     }//GEN-LAST:event_jmiUsuariosActionPerformed
 
     private void jmiPermisosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiPermisosActionPerformed
@@ -356,12 +361,30 @@ public class Principal extends javax.swing.JFrame {
         // TODO add your handling code here:
          abrirVentanaPrecios();
     }//GEN-LAST:event_jmiPreciosActionPerformed
+
+    private void jmiNovedadesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jmiNovedadesActionPerformed
+        abrirVentanaNovedades();
+    }//GEN-LAST:event_jmiNovedadesActionPerformed
     private void abrirVentanaPrecios() {
             // Crear una instancia de la ventana Precios
             Precios precios = new Precios();
 
             // Hacer visible la ventana Precios
             precios.setVisible(true);
+        }
+    private void abrirVentanaNovedades() {
+            // Crear una instancia de la ventana Precios
+            Vnovedades novedades = new Vnovedades();
+
+            // Hacer visible la ventana Precios
+            novedades.setVisible(true);
+        }
+    private void abrirVentanaUsuariosABM() {
+            // Crear una instancia de la ventana Precios
+            UsuariosABM usuariosabm = new UsuariosABM();
+
+            // Hacer visible la ventana Precios
+            usuariosabm.setVisible(true);
         }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

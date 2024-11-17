@@ -2,8 +2,12 @@
 package main.java.sigep.views;
 
 
-import java.net.URL;
-import javax.swing.ImageIcon;
+import java.awt.event.KeyEvent;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import main.java.sigep.model.dao.ProductosPOSDAO;
+import main.java.sigep.model.entities.ProductosPOS;
 
 
 /**
@@ -13,6 +17,7 @@ import javax.swing.ImageIcon;
 public class Ayuda extends javax.swing.JDialog {
    
     private String result;
+   
   
     /**
      * Creates new form Ayuda
@@ -21,15 +26,25 @@ public class Ayuda extends javax.swing.JDialog {
     
         super(parent, modal);
         initComponents();
-        setColumns();
-        URL url = getClass().getResource("/main/java/sigep/views/icons/zebra.png");
-        setIconImage(new ImageIcon(url).getImage());
-        result = ""; 
+        limpiarDatos();
+        tfBusqueda.requestFocusInWindow();
+    
+        //Evento KeyListener a tfBusqueda
+        tfBusqueda.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tfBusquedaKeyReleased(evt);
+            }
+        });
+        
+        //Evento KeyListener a tbResultado
+        tbResultado.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                tbResultadoKeyReleased(evt);
+                
+            }
+        });
     }
 
-    Ayuda(Precios aThis, boolean b, boolean b0) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
     
     public String getResult() {
         return result;
@@ -54,21 +69,33 @@ public class Ayuda extends javax.swing.JDialog {
 
         lbBusqueda.setText("Búsqueda");
 
+        tfBusqueda.setToolTipText("Presione <Enter> para confirmar");
+        tfBusqueda.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                tfBusquedaFocusGained(evt);
+            }
+        });
+        tfBusqueda.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tfBusquedaActionPerformed(evt);
+            }
+        });
+
         cbAvanzada.setText("Búsqueda Avanzada");
 
         tbResultado.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null},
-                {null, null, null, null, null, null}
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null},
+                {null, null, null, null, null}
             },
             new String [] {
-                "Cod. Int.", "Cod. Barras", "Descripción", "Existencia", "Precio", "Existencia FH"
+                "Cod. Int.", "Cod. Barras", "Descripción", "Existencia", "Precio"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -87,11 +114,10 @@ public class Ayuda extends javax.swing.JDialog {
                     .addComponent(spResultado)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(tfBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(cbAvanzada))
+                            .addComponent(tfBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, 428, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(lbBusqueda))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(cbAvanzada)
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -104,62 +130,78 @@ public class Ayuda extends javax.swing.JDialog {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(tfBusqueda, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(cbAvanzada))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(spResultado, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
-                .addContainerGap())
+                .addGap(12, 12, 12))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void setColumns() {/*
-        Properties props = new Properties();
-        try (InputStream input = new FileInputStream("jdbc.conf")) {
-            props.load(input);
-        } catch (IOException ex) {
-            System.out.println("Error! " + ex.getMessage());
-        }
-        
-        //Oculto la columna existencia2 para sucursal distinta de casa central
-        if (!props.getProperty("db", "").equalsIgnoreCase("ferreteria")) {
-            tbResultado.removeColumn(tbResultado.getColumn("Existencia FH"));
-        }*/
-    }
+    private void tfBusquedaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfBusquedaActionPerformed
+         
+    }//GEN-LAST:event_tfBusquedaActionPerformed
 
-    private void tfBusquedaKeyReleased(java.awt.event.KeyEvent evt) { /*                                      
+    private void tfBusquedaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_tfBusquedaFocusGained
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tfBusquedaFocusGained
+
+    private void tfBusquedaKeyReleased(java.awt.event.KeyEvent evt) {                                     
         switch (evt.getKeyCode()) {
             case KeyEvent.VK_ENTER:
-                if (!tfBusqueda.getText().isEmpty()) {
-                    List<Productos> articulos = ArticuloDAO.getArticulos(tfBusqueda.getText(), cbAvanzada.isSelected());
+                buscarArticulos();
+                break;
+            case KeyEvent.VK_ESCAPE:
+                limpiarDatos();
+                this.dispose();
+                break;
+        }
+    }
+    
+    private void limpiarDatos() {
+        DefaultTableModel model = (DefaultTableModel) tbResultado.getModel();
+        model.setRowCount(0); // Clear all rows
+        tfBusqueda.setText("");
+    }
+    
+    private void buscarArticulos() {
+        String textoBusqueda = tfBusqueda.getText();
+        if (!tfBusqueda.getText().isEmpty()) {
+                    List<ProductosPOS> articulos = ProductosPOSDAO.getArticulos(tfBusqueda.getText(), cbAvanzada.isSelected());
+                    DefaultTableModel model = (DefaultTableModel) tbResultado.getModel();
+                    model.setRowCount(0); // Limpio los resultados
+                    
                     if (articulos.isEmpty()) {
                         JOptionPane.showMessageDialog(this, "No hay resultados para mostrar", "Alerta!", JOptionPane.ERROR_MESSAGE);
                     } else {
-                        DefaultTableModel model = (DefaultTableModel) tbResultado.getModel();
-                        model.setRowCount(0);
-                        for (Productos articulo : articulos) {
-                            model.addRow(articulo.toObject(true));
+                        for (ProductosPOS articulo : articulos) {
+                            model.addRow(articulo.toObject());
                         }
                         tbResultado.requestFocus();
                         tbResultado.setRowSelectionInterval(0, 0);
                     }
-                }
-                break;
-            case KeyEvent.VK_ESCAPE:
-                setVisible(false);
-                break;
-        }*/
+        }
     }
 
-    private void tbResultadoKeyReleased(java.awt.event.KeyEvent evt) { /*                                       
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+     
+    private void tbResultadoKeyReleased(java.awt.event.KeyEvent evt) {                                        
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {    
+            evt.consume();
             DefaultTableModel model = (DefaultTableModel) tbResultado.getModel();
-            if (model.getRowCount() > 0) {
-                int row = tbResultado.convertRowIndexToModel(tbResultado.getSelectedRow());
-                result = (String) model.getValueAt(row, 0);
-                this.dispose();
+            int row = tbResultado.getSelectedRow(); 
+
+            if (row >= 0 && row < model.getRowCount()) {
+                
+                if (row >= 2) {
+                    row = row - 1;  //Esto lo puse asi porque me saltaba al valor siguiente
+                }
+                int modelRow = tbResultado.convertRowIndexToModel(row);  
+                result = (String) model.getValueAt(modelRow, 0); 
+                limpiarDatos();
+                this.dispose();  // Cierra el diálogo de ayuda
             }
-        }*/
-    }                                       
+        }
+    }                                      
 
     private void formKeyPressed(java.awt.event.KeyEvent evt) {/*                                
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
@@ -173,7 +215,7 @@ public class Ayuda extends javax.swing.JDialog {
         }*/
     } 
     
-     
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JCheckBox cbAvanzada;

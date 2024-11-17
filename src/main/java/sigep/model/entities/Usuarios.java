@@ -12,17 +12,19 @@ public class Usuarios {
     private String nombre;
     private String clave;
     private int idRol;
+    private String rolDescripcion;
     
   
 //Constructores
 
     public Usuarios(){
 };
-    public Usuarios(Integer idUsuario,String nombre, Integer idRol ){
+    public Usuarios(Integer idUsuario,String nombre,String clave, Integer idRol ){
         
         this.idUsuario  =   idUsuario;
         this.nombre     =   nombre;
         this.idRol      =   idRol; 
+        this.clave      =   clave;
     
     };
 
@@ -51,6 +53,20 @@ public class Usuarios {
     }
     
     
+    public String getClave() {
+        return clave;
+    }
+
+    public void setClave(String clave) {
+        this.clave = clave;
+    }
     
+    public void setRolDescripcion(String rolDescripcion) {
+        this.rolDescripcion = rolDescripcion;
+    }
+    
+    public Object[] toObject() {
+        return new Object[] { idUsuario, nombre, String.format("%02d", idRol)+"-"+rolDescripcion,clave};
+    }
     
 }
