@@ -12,7 +12,7 @@ public abstract class Conexion {
     public static Connection conectar() {
         String url = "jdbc:mysql://localhost:3306/etiquetas"; // URL de conexión
         String user = "root"; // Usuario de la base de datos
-        String password = "tijeras22"; // Contraseña de la base de datos
+        String password = "root"; // Contraseña de la base de datos
 
         try {
             // Registrar el controlador de MySQL
