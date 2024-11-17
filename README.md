@@ -29,6 +29,7 @@ Este paquete contiene las clases relacionadas con la interfaz gráfica de usuari
 - Interfaz gráfica: La clase Precios ofrece una interfaz intuitiva para que los usuarios seleccionen productos y gestionen la impresión de etiquetas.
 - Autenticación y roles: A través de UsuariosDAOImpl, se validan los usuarios y se asignan roles para definir el acceso a las diferentes funcionalidades del sistema.
 - Gestión de Novedades
+- Gestión de Usuarios (CRUD)
 
 ## Próximos pasos
 El proyecto SIGEP aún está en desarrollo y las próximas etapas incluirán la implementación de nuevas funcionalidades, mejora en la seguridad del sistema y optimización de la interfaz gráfica.
